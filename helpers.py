@@ -5,6 +5,14 @@ from collections import defaultdict
 from usb.core import USB
 
 
+## TODO:
+
+## add restore function
+
+## fill usbguard blocker function
+
+## add whonix functionality
+
 def check_user_is_in_vboxgroup() -> bool:
     """
     Check if current user is in vboxgroup.
@@ -117,7 +125,7 @@ def lookup_usb_devices() -> DefaultDict[int, list]:
     device_id = subprocess.Popen("lsusb", stdout=subprocess.PIPE)
     device_id = subprocess.check_output(["grep",
                                          "-oE", "ID [a-f0-9]{4}:[a-f0-9]{4}"], stdin=device_id.stdout)
-    lsusb_verbose = subprocess.Popen(["lsusb", "-v"], stdout=subprocess.PIPE)
+    lsusb_verbose = subprocess.Popen(["lsusb", "-v", ], stdout=subprocess.PIPE)
     lsusb_verbose = subprocess.check_output(["grep",
                                              "-e", grep_keywords[0],
                                              "-e", grep_keywords[1],
