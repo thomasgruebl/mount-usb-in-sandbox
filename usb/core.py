@@ -1,6 +1,7 @@
 import subprocess
 import getpass
 import logging
+import pickle
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()
@@ -20,9 +21,16 @@ class USB:
         return getpass.getpass(prompt='PLEASE ENTER YOUR SUDO PASSWORD: ')
 
     @staticmethod
-    def disconnect_network_interfaces(interface: str):
+    def connect_disconnect_network_interfaces(action: str, interface: str):
         __sudo_pw = USB.__prompt_sudo()
-        command = "sudo -S ifconfig " + interface + " down"
+        if action == "connect":
+            command = "sudo -S ifconfig " + interface + " up"
+        elif action == "disconnect":
+            command = "sudo -S ifconfig " + interface + " down"
+        else:
+            logger.error("Cannot connect or disconnect network interface")
+            return
+
         p = subprocess.Popen(command,
                              shell=True,
                              stderr=subprocess.PIPE,
@@ -33,8 +41,6 @@ class USB:
             logger.debug(f"{stdout}, {stderr}")
         except subprocess.TimeoutExpired:
             p.kill()
-
-        logger.info("Disconnecting network interfaces...")
 
 
 class USBGuard:
@@ -59,7 +65,7 @@ class USBGuard:
     def allow_device():
         def __list_devices() -> list[str | int]:
             try:
-                list_devices = subprocess.Popen(["usbguard", "list-devices", ],
+                list_devices = subprocess.Popen(["usbguard", "list-devices"],
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 blocked_usbs = subprocess.check_output(["grep",
@@ -84,6 +90,34 @@ class USBGuard:
             stdout, stderr = allow_device.communicate()
             logger.debug(f"{stdout}, {stderr}")
 
+        # make changes persistent and note them in the pickle logfile (to be able to --restore)
+        with open('allowed_usbguard.pickle', 'ab') as f:
+            pickle.dump(usbs, f, pickle.HIGHEST_PROTOCOL)
+
     def block_device(self):
-        pass
+        def __find_device_id() -> list[str | int]:
+            d = list()
+            try:
+                list_devices = subprocess.Popen(["usbguard", "list-devices"],
+                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                for device_id in self.device_ids:
+                    matched_usbs = subprocess.check_output(["grep",
+                                                            "-E",
+                                                            device_id],
+                                                           stdin=list_devices.stdout)
+                    matched_usbs = matched_usbs.decode('UTF-8').splitlines()
+                    d.append(matched_usbs[0].split(":")[0])
+            except subprocess.CalledProcessError:
+                d = []
+
+            return d
+
+        devices = __find_device_id()
+        for device in devices:
+            block_device = subprocess.Popen(["usbguard", "block-device", device],
+                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = block_device.communicate()
+            logger.debug(f"{stdout}, {stderr}")
+
 
