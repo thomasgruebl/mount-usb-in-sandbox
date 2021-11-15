@@ -7,11 +7,10 @@ from usb.core import USB
 
 ## TODO:
 
-## add restore function
-
-## fill usbguard blocker function
 
 ## add whonix functionality
+
+
 
 def check_user_is_in_vboxgroup() -> bool:
     """
@@ -62,7 +61,6 @@ def is_vm_running(sandbox_id: str) -> bool:
     running_vms = subprocess.Popen(["vboxmanage", "list", "runningvms"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = running_vms.communicate()
-    print(stdout, stderr)
     running_vms = stdout.decode('UTF-8').splitlines()
 
     running_vms = [re.search("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", x).group(0)
