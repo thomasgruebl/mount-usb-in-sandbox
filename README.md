@@ -10,6 +10,7 @@
 - VirtualBox (https://www.virtualbox.org/wiki/Downloads) including the VirtualBox Extension pack
 - A VM image file e.g. Ubuntu 21.04 (https://releases.ubuntu.com/21.04/)
 - Enable USB Controller in VirtualBox (Sandbox -> Settings -> USB)
+- Install usbguard on your machine (https://usbguard.github.io/)
 
 You can display your VM UUID by running
 ```console
@@ -42,7 +43,7 @@ optional arguments:
   -h, --help                            Show help information
   -v, --verbose                         Display verbose information
   -r, --restore                         Restore system to its original state (bringing network interfaces back up removing usb device from allowed usbguard list)
-  -i INTERFACE, --interface INTERFACE   Specify interface names to disconnect from (comma-seperated)
+  -i INTERFACE, --interface INTERFACE   Specify interface names to disconnect from (space-seperated)
   -w, --whonix                          Specify the whonix flag to mount the USB device in your whonix workstation (needs whonix gateway as well)
   
 ```
