@@ -3,8 +3,11 @@ import logging
 import os
 import re
 import time
+import pickle
+import sys
 
 import helpers
+import restore as rest
 import sandbox.core as sand
 import usb.core
 
@@ -38,11 +41,12 @@ def main():
                         help="Specify the name or uuid of your virtual box"
                         )
 
-    # parser.add_argument("--interfaces", "-i",
-    #                     type=str,
-    #                     action="store",
-    #                     help="Specify interface names to disconnect from"
-    #                     )
+    parser.add_argument("--interfaces", "-i",
+                        type=str,
+                        action="store",
+                        nargs='+',
+                        help="Specify interface names to disconnect from"
+                        )
 
     # parser.add_argument("--whonix", "-w",
     #                     type=str,
@@ -56,6 +60,11 @@ def main():
     verbose = args.verbose
     restore = args.restore
     sandbox_id = args.sandbox
+    interfaces = args.interfaces
+
+    if restore:
+        rest.restore_changes()
+        sys.exit()
 
     # check if usbguard is installed
     if not usb.core.USBGuard.check_if_installed():
@@ -88,19 +97,25 @@ def main():
         print("\n\nWaiting for usb mass storage device to connect...\n\n")
         time.sleep(5)
 
-    network_interfaces = helpers.get_network_interfaces()
-    try:
-        network_interfaces.remove("lo")
-        network_interfaces = [x for x in network_interfaces if not x.startswith("docker")]
-    except ValueError:
-        logger.error("Couldn't ignore loopback interface - interface not found.")
-        pass
+    if len(interfaces) > 0:
+        network_interfaces = interfaces
+    else:
+        network_interfaces = helpers.get_network_interfaces()
+        try:
+            network_interfaces.remove("lo")
+            network_interfaces = [x for x in network_interfaces if not x.startswith("docker")]
+        except ValueError:
+            logger.error("Couldn't ignore loopback interface - interface not found.")
+            pass
 
     print(f"\n\nFound {len(network_interfaces)} network interfaces: {network_interfaces}")
-    print("Disconnecting interfaces...")
-    #todo: add option to specify network interfaces with int flag
-    # for interface in network_interfaces:
-        # core.USB.disconnect_network_interfaces(interface)
+    for interface in network_interfaces:
+        logger.debug(f"Disconnecting {interface} interface...")
+        usb.core.USB.connect_disconnect_network_interfaces("disconnect", interface)
+
+    # make changes persistent and note them in the pickle logfile (to be able to --restore)
+    with open('interfaces.pickle', 'ab') as f:
+        pickle.dump(network_interfaces, f, pickle.HIGHEST_PROTOCOL)
 
     if verbose:
         logger.debug(f"Sandbox ID/name given: {sandbox_id}")
@@ -131,12 +146,13 @@ def main():
     print(f"Successfully mounted {sandbox.sandbox_id}.")
 
     # If Sandbox VM is closed before USB device gets removed -> block device on host using usbguard to avoid automount
-    while helpers.is_vm_running(sandbox.sandbox_id):
-        # print(f"VM {sandbox.sandbox_id} is still up and running.")
-        time.sleep(1)
-
-    usbguard = usb.core.USBGuard(device_ids=[x.device_id for x in usb_objects])
-    usbguard.block_device()
+    try:
+        while helpers.is_vm_running(sandbox.sandbox_id):
+            # print(f"VM {sandbox.sandbox_id} is still up and running.")
+            time.sleep(1)
+    finally:
+        usbguard = usb.core.USBGuard(device_ids=[x.device_id for x in usb_objects])
+        usbguard.block_device()
 
 
 if __name__ == '__main__':
