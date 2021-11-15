@@ -21,7 +21,7 @@ def restore_changes():
         # reconnect network interfaces that have previously been disconnected
         for i in ints:
             usb.core.USB.connect_disconnect_network_interfaces("connect", i)
-            logger.debug(f"Reconnecting to {interface} interface...")
+            logger.debug(f"Reconnecting to {i} interface...")
 
         # block usb device using usbguard
         usbguard = usb.core.USBGuard(device_ids=allowed_usbguard)
