@@ -5,6 +5,8 @@ __pycache__/
 
 # custom
 .idea/
+allowed_usbguard.pickle
+interfaces.pickle
 
 # C extensions
 *.so
