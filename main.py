@@ -38,6 +38,20 @@ def main():
                         help="Specify the name or uuid of your virtual box"
                         )
 
+    # parser.add_argument("--interfaces", "-i",
+    #                     type=str,
+    #                     action="store",
+    #                     help="Specify interface names to disconnect from"
+    #                     )
+
+    # parser.add_argument("--whonix", "-w",
+    #                     type=str,
+    #                     action="store_true",
+    #                     default=False,
+    #                     help="Specify the whonix flag to mount the USB device in your whonix workstation \
+    #                          (needs whonix gateway as well)"
+    #                     )
+
     args = parser.parse_args()
     verbose = args.verbose
     restore = args.restore
@@ -84,6 +98,7 @@ def main():
 
     print(f"\n\nFound {len(network_interfaces)} network interfaces: {network_interfaces}")
     print("Disconnecting interfaces...")
+    #todo: add option to specify network interfaces with int flag
     # for interface in network_interfaces:
         # core.USB.disconnect_network_interfaces(interface)
 
@@ -117,7 +132,7 @@ def main():
 
     # If Sandbox VM is closed before USB device gets removed -> block device on host using usbguard to avoid automount
     while helpers.is_vm_running(sandbox.sandbox_id):
-        print(f"VM {sandbox.sandbox_id} is still up and running.")
+        # print(f"VM {sandbox.sandbox_id} is still up and running.")
         time.sleep(1)
 
     usbguard = usb.core.USBGuard(device_ids=[x.device_id for x in usb_objects])
