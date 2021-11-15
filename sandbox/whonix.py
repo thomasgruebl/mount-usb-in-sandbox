@@ -1,4 +1,4 @@
-import core
+import sandbox.core
 
 
 class Whonix(Sandbox):
