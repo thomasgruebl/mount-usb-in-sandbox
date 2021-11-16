@@ -2,6 +2,8 @@ import subprocess
 import usb.core
 import logging
 
+from typing import List
+
 logger = logging.getLogger(__name__)
 logging.basicConfig()
 logger.setLevel(logging.DEBUG)
@@ -25,7 +27,7 @@ class Sandbox:
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = s.communicate()
 
-    def mount_usb_to_sandbox(self, usb_uuid: list[str]):
+    def mount_usb_to_sandbox(self, usb_uuid: List[str]):
         for uuid in usb_uuid:
             p = subprocess.Popen(["vboxmanage", "controlvm", self.sandbox_id, "usbattach", uuid],
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
