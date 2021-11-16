@@ -2,12 +2,17 @@ import subprocess
 import getpass
 import logging
 import pickle
+import sys
 
 from typing import List
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()
 logger.setLevel(logging.DEBUG)
+
+
+class SudoError(Exception):
+    pass
 
 
 class USB:
@@ -20,7 +25,7 @@ class USB:
 
     @staticmethod
     def __prompt_sudo():
-        return getpass.getpass(prompt='PLEASE ENTER YOUR SUDO PASSWORD: ')
+        return getpass.getpass(prompt='\n\nPLEASE ENTER YOUR SUDO PASSWORD: ')
 
     @staticmethod
     def connect_disconnect_network_interfaces(action: str, interface: str):
@@ -41,8 +46,13 @@ class USB:
         try:
             stdout, stderr = p.communicate(input=(__sudo_pw + '\n').encode(), timeout=5)
             logger.debug(f"{stdout}, {stderr}")
-        except subprocess.TimeoutExpired:
-            p.kill()
+            stderr = stderr.decode('UTF-8')
+
+            if (stderr.find("no password was provided") != -1) or (stderr.find("incorrect password") != -1):
+                raise SudoError(stderr)
+        except SudoError:
+            logger.error(SudoError)
+            sys.exit(1)
 
 
 class USBGuard:
@@ -65,7 +75,7 @@ class USBGuard:
 
     @staticmethod
     def allow_device():
-        def __list_devices() -> List[str | int]:
+        def __list_devices() -> List[str]:
             try:
                 list_devices = subprocess.Popen(["usbguard", "list-devices"],
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -97,7 +107,7 @@ class USBGuard:
             pickle.dump(usbs, f, pickle.HIGHEST_PROTOCOL)
 
     def block_device(self):
-        def __find_device_id() -> List[str | int]:
+        def __find_device_id() -> List[str]:
             d = list()
             try:
                 list_devices = subprocess.Popen(["usbguard", "list-devices"],

@@ -11,7 +11,6 @@ import restore as rest
 import sandbox.core as sand
 import usb.core
 
-
 logger = logging.getLogger(__name__)
 logging.basicConfig()
 logger.setLevel(logging.DEBUG)
@@ -97,7 +96,8 @@ def main():
         print("\n\nWaiting for usb mass storage device to connect...\n\n")
         time.sleep(5)
 
-    if len(interfaces) > 0:
+    NoneType = type(None)
+    if not isinstance(interfaces, NoneType):
         network_interfaces = interfaces
     else:
         network_interfaces = helpers.get_network_interfaces()
@@ -143,7 +143,7 @@ def main():
         print("Looked up USB uuids from device_id: ", usb_uuids)
 
     sandbox.mount_usb_to_sandbox(usb_uuids)
-    print(f"Successfully mounted {sandbox.sandbox_id}.")
+    print(f"\n\nSuccessfully mounted USB to {sandbox.sandbox_id}.")
 
     # If Sandbox VM is closed before USB device gets removed -> block device on host using usbguard to avoid automount
     try:

@@ -1,6 +1,7 @@
 import pickle
 import usb.core
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()
@@ -20,14 +21,19 @@ def restore_changes():
     try:
         # reconnect network interfaces that have previously been disconnected
         for i in ints:
+            logger.debug(f"\n\nReconnecting to {i} interface...")
             usb.core.USB.connect_disconnect_network_interfaces("connect", i)
-            logger.debug(f"Reconnecting to {i} interface...")
 
         # block usb device using usbguard
         usbguard = usb.core.USBGuard(device_ids=allowed_usbguard)
         if usbguard.check_if_installed():
             usbguard.block_device()
     except:
-        pass
+        logger.error("Could not properly restore changes from log files.")
+    else:
+        logger.debug("Restored changes from log files [interfaces.pickle] and/or [allowed_usbguard.pickle]")
 
-    logger.debug("Restored changes from log files [interfaces.pickle] and/or [allowed_usbguard.pickle]")
+        # delete restore files
+        os.remove('interfaces.pickle')
+        os.remove('allowed_usbguard.pickle')
+
