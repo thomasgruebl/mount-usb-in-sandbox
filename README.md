@@ -27,7 +27,7 @@ $ git clone https://github.com/thomasgruebl/mount-usb-in-sandbox.git
 $ cd mount-usb-to-sandbox 
 
 # install
-$ python3 setup.py install --user
+$ pip3 install .
 ```
 
 ## Usage
