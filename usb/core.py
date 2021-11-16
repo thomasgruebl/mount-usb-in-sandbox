@@ -3,6 +3,8 @@ import getpass
 import logging
 import pickle
 
+from typing import List
+
 logger = logging.getLogger(__name__)
 logging.basicConfig()
 logger.setLevel(logging.DEBUG)
@@ -45,7 +47,7 @@ class USB:
 
 class USBGuard:
 
-    def __init__(self, device_ids: list[str]):
+    def __init__(self, device_ids: List[str]):
         self.device_ids = device_ids
 
     @staticmethod
@@ -63,7 +65,7 @@ class USBGuard:
 
     @staticmethod
     def allow_device():
-        def __list_devices() -> list[str | int]:
+        def __list_devices() -> List[str | int]:
             try:
                 list_devices = subprocess.Popen(["usbguard", "list-devices"],
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -95,7 +97,7 @@ class USBGuard:
             pickle.dump(usbs, f, pickle.HIGHEST_PROTOCOL)
 
     def block_device(self):
-        def __find_device_id() -> list[str | int]:
+        def __find_device_id() -> List[str | int]:
             d = list()
             try:
                 list_devices = subprocess.Popen(["usbguard", "list-devices"],
