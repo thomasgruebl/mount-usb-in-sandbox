@@ -1,6 +1,6 @@
 import subprocess
 import re
-from typing import DefaultDict
+from typing import DefaultDict, List
 from collections import defaultdict
 from usb.core import USB
 
@@ -31,7 +31,7 @@ def check_user_is_in_vboxgroup() -> bool:
     return False
 
 
-def get_network_interfaces() -> list[str]:
+def get_network_interfaces() -> List[str]:
     """
     Returns a list of network interfaces.
 
@@ -73,7 +73,7 @@ def is_vm_running(sandbox_id: str) -> bool:
     return False
 
 
-def get_usb_uuid(usb_objects: list[USB]) -> list[str]:
+def get_usb_uuid(usb_objects: List[USB]) -> List[str]:
     """
     Finds UUID of USB mass storage based on the device_id stored in the USB objects.
 
