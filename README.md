@@ -1,5 +1,15 @@
 # mount-usb-in-sandbox
 
+![GitHub last commit](https://img.shields.io/github/last-commit/thomasgruebl/mount-usb-in-sandbox?style=plastic) ![GitHub](https://img.shields.io/github/license/thomasgruebl/phone-scraper?style=plastic) <a style="text-decoration: none" href="https://github.com/thomasgruebl/mount-usb-in-sandbox/stargazers">
+<img src="https://img.shields.io/github/stars/thomasgruebl/mount-usb-in-sandbox.svg?style=plastic" alt="Stars">
+</a>
+<a style="text-decoration: none" href="https://github.com/thomasgruebl/mount-usb-in-sandbox/fork">
+<img src="https://img.shields.io/github/forks/thomasgruebl/mount-usb-in-sandbox.svg?style=plastic" alt="Forks">
+</a>
+<a style="text-decoration: none" href="https://github.com/thomasgruebl/mount-usb-in-sandbox/issues">
+<img src="https://img.shields.io/github/issues/thomasgruebl/mount-usb-in-sandbox.svg?style=plastic" alt="Issues">
+</a>
+
 ## Features
 - Automatically mounts a USB device in a sandbox
 - Rejects mount attempts on host using usbguard (https://usbguard.github.io/)
@@ -10,7 +20,8 @@
 - VirtualBox (https://www.virtualbox.org/wiki/Downloads) including the VirtualBox Extension pack
 - A VM image file e.g. Ubuntu 21.04 (https://releases.ubuntu.com/21.04/)
 - Enable USB Controller in VirtualBox (Sandbox -> Settings -> USB)
-- Install usbguard on your machine (https://usbguard.github.io/)
+- Download and install the latest usbguard release on your machine (https://github.com/USBGuard/usbguard/releases)
+- Follow the usbguard installation instructions (https://usbguard.github.io/documentation/compilation.html)
 
 You can display your VM UUID by running
 ```console
@@ -28,6 +39,12 @@ $ cd mount-usb-to-sandbox
 
 # install
 $ pip3 install .
+```
+
+Alternatively, if pip installation does not work you can run the main:
+```console
+# run
+$ python3 main.py [options]
 ```
 
 ## Usage
