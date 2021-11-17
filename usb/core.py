@@ -4,7 +4,7 @@ import logging
 import pickle
 import sys
 
-from typing import List
+from typing import List, Any
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()
@@ -24,11 +24,25 @@ class USB:
         self.serial = serial
 
     @staticmethod
-    def __prompt_sudo():
+    def __prompt_sudo() -> Any:
+        """
+        Prompts sudo password in command line.
+
+        :return: Returns a prompt request object
+        :rtype: Any
+        """
         return getpass.getpass(prompt='\n\nPLEASE ENTER YOUR SUDO PASSWORD: ')
 
     @staticmethod
     def connect_disconnect_network_interfaces(action: str, interface: str):
+        """
+        Connects or disconnects network interface.
+
+        :param action: Connect or disconnect
+        :type action: str
+        :param interface: Network interface name
+        :type interface: str
+        """
         __sudo_pw = USB.__prompt_sudo()
         if action == "connect":
             command = "sudo -S ifconfig " + interface + " up"
@@ -62,6 +76,12 @@ class USBGuard:
 
     @staticmethod
     def check_if_installed() -> bool:
+        """
+        Checks if usbguard is installed.
+
+        :return: Returns true if installed, else false
+        :rtype: bool
+        """
         p = subprocess.Popen(["which", "usbguard"],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
@@ -75,7 +95,16 @@ class USBGuard:
 
     @staticmethod
     def allow_device():
+        """
+        Allows usb devices that have been blocked by usbguard
+        """
         def __list_devices() -> List[str]:
+            """
+            Private inner function that lists all usb devices.
+
+            :return: Returns a list of blocked usb device IDs
+            :rtype: List[str]
+            """
             try:
                 list_devices = subprocess.Popen(["usbguard", "list-devices"],
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -107,7 +136,19 @@ class USBGuard:
             pickle.dump(usbs, f, pickle.HIGHEST_PROTOCOL)
 
     def block_device(self):
+        """
+        Blocks a usb device using the 'usbguard block-device' command.
+
+        :param self: the sandbox_id is either the name or the uuid of the box, depending on the user's input
+        :type self: USBGuard
+        """
         def __find_device_id() -> List[str]:
+            """
+            Lookup usbguard device ID.
+
+            :return: Returns list of device IDs
+            :rtype: List[str]
+            """
             d = list()
             try:
                 list_devices = subprocess.Popen(["usbguard", "list-devices"],

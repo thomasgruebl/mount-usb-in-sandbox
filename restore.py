@@ -9,6 +9,10 @@ logger.setLevel(logging.DEBUG)
 
 
 def restore_changes():
+    """
+    Brings network interfaces back up (that have previously been disabled) and block usb devices
+    that have been allowed with usbguard.
+    """
     try:
         with open('interfaces.pickle', 'rb') as f:
             ints = pickle.load(f)

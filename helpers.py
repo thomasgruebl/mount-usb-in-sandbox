@@ -11,7 +11,6 @@ from usb.core import USB
 ## add whonix functionality
 
 
-
 def check_user_is_in_vboxgroup() -> bool:
     """
     Check if current user is in vboxgroup.

@@ -23,11 +23,25 @@ class Sandbox:
             self.sandbox_id = self.uuid
 
     def run_sandbox(self):
+        """
+        Start the VBOX VM.
+
+        :param self: Sandbox object
+        :type self: Sandbox
+        """
         s = subprocess.Popen(["vboxmanage", "startvm", self.sandbox_id],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = s.communicate()
 
     def mount_usb_to_sandbox(self, usb_uuid: List[str]):
+        """
+        Checks if a the sandbox VM is still up and running.
+
+        :param self: Sandbox object
+        :type self: Sandbox
+        :param usb_uuid: Provides a list of usb UUIDS
+        :type usb_uuid: List[str]
+        """
         for uuid in usb_uuid:
             p = subprocess.Popen(["vboxmanage", "controlvm", self.sandbox_id, "usbattach", uuid],
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
