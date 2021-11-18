@@ -1,14 +1,22 @@
-import subprocess
 import re
-from typing import DefaultDict, List
+import subprocess
 from collections import defaultdict
+from typing import DefaultDict, List
+
 from usb.core import USB
 
 
-## TODO:
+def check_if_sandbox_uuid(sandbox_id: str) -> bool:
+    """
+    Check if sandbox_id is a UUID.
 
-
-## add whonix functionality
+    :return: True if sandbox_is is UUID, else if it is a sandbox name -> return false
+    :rtype: bool
+    """
+    if re.match("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", str(sandbox_id)):
+        return True
+    else:
+        return False
 
 
 def check_user_is_in_vboxgroup() -> bool:
