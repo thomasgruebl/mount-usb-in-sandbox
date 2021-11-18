@@ -11,8 +11,6 @@ logger.setLevel(logging.DEBUG)
 
 class Sandbox:
     def __init__(self, **kwargs):
-        # TODO
-        # add default values of vbox instead of "None" which are the name and uuid of the vbox image provided
         self.name = kwargs.get('name', None)
         self.uuid = kwargs.get('uuid', None)
         self.device_ids = kwargs.get('device_ids', None)

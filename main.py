@@ -123,6 +123,7 @@ def main():
     if verbose:
         logger.debug(f"Sandbox ID/name given: {sandbox_id}")
 
+    # initialise sandbox objects with uuid or name
     try:
         if whonix:
             if helpers.check_if_sandbox_uuid(str(sandbox_id[0])):
