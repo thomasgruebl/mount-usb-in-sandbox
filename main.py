@@ -3,14 +3,14 @@
 import argparse
 import logging
 import os
-import re
-import time
 import pickle
 import sys
+import time
 
 import helpers
 import restore as rest
 import sandbox.core as sand
+import sandbox.whonix as who
 import usb.core
 
 logger = logging.getLogger(__name__)
@@ -38,6 +38,7 @@ def main():
     parser.add_argument("--sandbox", "-s",
                         type=str,
                         action="store",
+                        nargs='+',
                         required=True,
                         help="Specify the name or uuid of your virtual box"
                         )
@@ -49,19 +50,19 @@ def main():
                         help="Specify interface names to disconnect from"
                         )
 
-    # parser.add_argument("--whonix", "-w",
-    #                     type=str,
-    #                     action="store_true",
-    #                     default=False,
-    #                     help="Specify the whonix flag to mount the USB device in your whonix workstation \
-    #                          (needs whonix gateway as well)"
-    #                     )
+    parser.add_argument("--whonix", "-w",
+                        action="store_true",
+                        default=False,
+                        help="Specify the whonix flag to mount the USB device in your whonix workstation \
+                             (needs whonix gateway as well)"
+                        )
 
     args = parser.parse_args()
     verbose = args.verbose
     restore = args.restore
     sandbox_id = args.sandbox
     interfaces = args.interfaces
+    whonix = args.whonix
 
     if restore:
         rest.restore_changes()
@@ -122,10 +123,26 @@ def main():
     if verbose:
         logger.debug(f"Sandbox ID/name given: {sandbox_id}")
 
-    if re.match("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", str(sandbox_id)):
-        sandbox = sand.Sandbox(uuid=sandbox_id, device_ids=[x.device_id for x in usb_objects])
-    else:
-        sandbox = sand.Sandbox(name=sandbox_id, device_ids=[x.device_id for x in usb_objects])
+    try:
+        if whonix:
+            if helpers.check_if_sandbox_uuid(str(sandbox_id[0])):
+                sandbox = who.Whonix(uuid=sandbox_id[0], device_ids=[x.device_id for x in usb_objects])
+            else:
+                sandbox = who.Whonix(name=sandbox_id[0], device_ids=[x.device_id for x in usb_objects])
+
+            if helpers.check_if_sandbox_uuid(str(sandbox_id[1])):
+                gateway = who.Whonix(name=sandbox_id[1], device_ids=[x.device_id for x in usb_objects])
+            else:
+                gateway = who.Whonix(uuid=sandbox_id[1], device_ids=[x.device_id for x in usb_objects])
+        else:
+            gateway = None
+            if helpers.check_if_sandbox_uuid(str(sandbox_id)):
+                sandbox = sand.Sandbox(uuid=sandbox_id, device_ids=[x.device_id for x in usb_objects])
+            else:
+                sandbox = sand.Sandbox(name=sandbox_id, device_ids=[x.device_id for x in usb_objects])
+    except IndexError:
+        logger.error("You need to specify both a sandbox uuid/name and a gateway uuid/name with the --whonix flag!")
+        raise SystemExit
 
     # Before running VirtualBox check if current user is in the vboxuser group in order to use USB devices
     if not helpers.check_user_is_in_vboxgroup():
@@ -137,6 +154,8 @@ def main():
         logging.debug("Name: ", sandbox.name)
         logging.debug("UUID: ", sandbox.uuid)
 
+    if whonix:
+        gateway.run_sandbox()
     sandbox.run_sandbox()
 
     usb_uuids = helpers.get_usb_uuid(usb_objects)
