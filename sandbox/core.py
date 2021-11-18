@@ -1,8 +1,8 @@
-import subprocess
-import usb.core
 import logging
-
+import subprocess
 from typing import List
+
+import usb.core
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()

@@ -14,5 +14,8 @@ setup(
     packages=['usb', 'sandbox'],
     license='MIT',
     keywords='usb mount sandbox whonix',
-    python_requires='>=3.8'
+    python_requires='>=3.8',
+    install_requires=[
+        'setuptools>=57.0.0'
+    ]
 )
