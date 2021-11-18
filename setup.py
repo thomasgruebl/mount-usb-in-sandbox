@@ -9,6 +9,7 @@ setup(
     description='Automatically mounts a USB device in a sandbox',
     long_description=long_description,
     author='Thomas Gruebl',
+    author_email="notmyrealemail@gmail.com",
     url='https://github.com/thomasgruebl/mount-usb-in-sandbox',
     packages=['usb', 'sandbox'],
     license='MIT',
