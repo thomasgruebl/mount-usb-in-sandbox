@@ -1,7 +1,8 @@
-import pickle
-import usb.core
 import logging
 import os
+import pickle
+
+import usb.core
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()
@@ -33,7 +34,7 @@ def restore_changes():
         if usbguard.check_if_installed():
             usbguard.block_device()
     except:
-        logger.error("Could not properly restore changes from log files.")
+        logger.error("Could not properly restore changes from at least one log files.")
     else:
         logger.debug("Restored changes from log files [interfaces.pickle] and/or [allowed_usbguard.pickle]")
 
