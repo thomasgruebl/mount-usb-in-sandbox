@@ -15,6 +15,7 @@
 - Rejects mount attempts on host using usbguard (https://usbguard.github.io/)
 - Disconnects host from all network interfaces by default (optionally you can specify particular interfaces)
 - Optionally mounts USB in a pre-configured Whonix sandbox (starts gateway + workstation)
+- **Note: Does not replace a proper air-bridged sandbox. Should only serve as an emergency sandboxing solution if no other options are available.**
 
 ## Dependencies
 - VirtualBox (https://www.virtualbox.org/wiki/Downloads) including the VirtualBox Extension pack
@@ -54,13 +55,26 @@ $ mount-usb-in-sandbox --help
 usage: mount-usb-in-sandbox [options]
 
 required arguments:
-  -s SANDBOX, --sandbox SANDBOX         Specify the name or uuid of your virtual box
+  -s SANDBOX, --sandbox SANDBOX         Specify the name or uuid of your virtual box (name needs to be without space)
 
 optional arguments:
   -h, --help                            Show help information
   -v, --verbose                         Display verbose information
   -r, --restore                         Restore system to its original state (bringing network interfaces back up removing usb device from allowed usbguard list)
-  -i INTERFACE, --interface INTERFACE   Specify interface names to disconnect from (space-seperated)
+  -i INTERFACE, --interface INTERFACE   Specify interface names to disconnect from (space-seperated). Disconnects all interfaces by default.
   -w, --whonix                          Specify the whonix flag to mount the USB device in your whonix workstation (needs whonix gateway as well)
   
 ```
+
+## [Optional] Whonix Setup
+
+In order to avoid privacy leaks, you can additionally setup Whonix by following the steps below:
+- Download and setup the Whonix Workstation + Gateway (https://www.whonix.org/wiki/VirtualBox/XFCE)
+- Configure Whonix by following the provided manuals (https://www.whonix.org/wiki/Documentation)
+- Enable auto-mount for USB in the Whonix Workstation under Settings->Removable Drives and Media and check the first 2 options
+
+### Whonix example usage
+```console
+$ mount-usb-in-sandbox --whonix --sandbox Whonix-Workstation-name-or-uuid Whonix-gateway-name-or-uuid -i wlp0s20f2
+```
+
