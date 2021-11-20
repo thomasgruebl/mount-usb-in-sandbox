@@ -78,3 +78,10 @@ In order to avoid privacy leaks, you can additionally setup Whonix by following 
 $ mount-usb-in-sandbox --whonix --sandbox Whonix-Workstation-name-or-uuid Whonix-gateway-name-or-uuid -i wlp0s20f2
 ```
 
+## Contributing
+1. Fork the repository
+2. Create a new feature branch (`git checkout -b my-feature-branch-name`)
+3. Commit your new changes (`git commit -m 'commit message' <changed-file>`)
+4. Push changes to the branch (`git push origin my-feature-branch-name`)
+5. Create a Pull Request
+
