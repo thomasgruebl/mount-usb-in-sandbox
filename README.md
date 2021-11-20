@@ -6,9 +6,7 @@
 <a style="text-decoration: none" href="https://github.com/thomasgruebl/mount-usb-in-sandbox/fork">
 <img src="https://img.shields.io/github/forks/thomasgruebl/mount-usb-in-sandbox.svg?style=plastic" alt="Forks">
 </a>
-<a style="text-decoration: none" href="https://github.com/thomasgruebl/mount-usb-in-sandbox/downloads">
-<img src="https://img.shields.io/github/downloads/thomasgruebl/mount-usb-in-sandbox.svg?style=plastic" alt="Downloads">
-</a>
+![Github All Releases](https://img.shields.io/github/downloads/thomasgruebl/mount-usb-in-sandbox/total.svg)
 <a style="text-decoration: none" href="https://github.com/thomasgruebl/mount-usb-in-sandbox/issues">
 <img src="https://img.shields.io/github/issues/thomasgruebl/mount-usb-in-sandbox.svg?style=plastic" alt="Issues">
 </a>
